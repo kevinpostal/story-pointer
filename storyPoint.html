@@ -1,0 +1,283 @@
+<head>
+	<title>ZG StoryPointer</title>
+</head>
+
+<body>
+	{{#if currentUser}}
+        {{> dashboard}}
+        {{> serverStatus}}
+    {{else}}
+        {{> register}}
+        {{> login}}
+    {{/if}}
+</body>
+
+<template name="register">
+<h3>New User?</h3>
+<form>
+    <input type="text" id="register-name" placeholder="Name...">
+    <input type="password" id="register-password" placeholder="Password...">
+    <input type="text" id="register-photo" placeholder="Avatar URL...(optional)">
+    <input type="submit" value="Register">
+</form>
+</template>
+
+<template name="login">
+<h3>Welcome Back</h3>
+<form>
+    <input type="text" id="login-name" placeholder="Name...">
+    <input type="password" id="login-password" placeholder="Password...">
+    <input type="submit" value="Login">
+</form>
+</template>
+
+<template name="dashboard">
+	<style>
+		.navbar{
+			width: 100%;
+			height: 80px;
+			background: #5A6378;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			z-index: 9999
+		}
+
+		.navbar >input{
+			float: right;
+			background: #475064;
+			border: none;
+			height: 40px;
+			border-radius: 120px;
+			text-align: center;
+			margin-right: 20px;
+			margin-top: 18px;
+			font-size: 16px;
+			width: 100px;
+			outline: none;
+			color: #4EB7CD;
+
+		}
+
+		.navbar >input::-moz-placeholder { /* Firefox 18- */
+		   color: #A4ACBD;
+		}
+
+		.navbar >input::-webkit-input-placeholder {
+		   color: #A4ACBD;
+		}
+
+
+
+		.logo{
+			width: 50px;
+			height: 40px;
+			background-image: url('http://www.zehnergroup.com/wp-content/themes/zehnergroup/images/zehnergroup-logo.jpg');
+			background-size: cover;
+			margin-left: 20px;
+			margin-top: 20px;
+			display: inline-block;
+		}
+
+		h1{
+			display: inline-block;
+			color: #A4ACBD;
+			font-weight: 200;
+			margin: 0;
+			position: relative;
+			top: -12px;
+			left: 20px;
+		}
+
+		@media screen and (max-width: 800px){
+			h1{
+				display: none;
+			}
+		}
+
+		.avatar{
+			width: 40px;
+			height: 40px;
+			background-size: cover;
+			background-repeat: no-repeat;
+			border-radius: 40px;
+			background-image: url({{currentUser.profile.avatur_url}});
+			float: right;
+			margin-top: 18px;
+			margin-right: 20px;
+		}
+
+		.logout{
+			float: right;
+			display: block;
+			box-sizing: border-box;
+			height: 40px;
+			width: 120px;
+			background: #FF6B6B;
+			text-transform: uppercase;
+			text-align: center;
+			border-radius: 120px;
+			color: white;
+			text-decoration: none;
+			font-weight: 200;
+			padding-top: 11px;
+			margin-top: 18px;
+			margin-right: 20px;
+		}
+	</style>
+	<nav class="navbar">
+		<div class="logo"></div>
+		<h1>ZehnerGroup Story Planning</h1>
+		<a href="#" class="logout">Logout</a>
+		<div class="avatar"></div>
+		<input id="current-vote" type="text" placeholder="estimate">
+    </nav>
+</template>
+
+<template name="serverStatus">
+	<style>
+		.public-avatar{
+			width: 170px;
+			height: 170px;
+			background-size: cover;
+			background-repeat: no-repeat;
+			border-radius: 10px;
+			background-image: url({{this.profile.avatur_url}});
+			margin: 0 auto;
+			position: relative;
+			top: 30px
+		}
+
+		.name{
+			width: 100%;
+			text-align: center;
+			background: #A4ACBD;
+			height: 40px;
+			z-index: 4;
+			position: relative;
+			top: -16px;
+			padding-top: 10px;
+			box-sizing: border-box;
+			color: #393F4F;
+		}
+
+		.public-vote{
+			position: absolute;
+			top: -10px;
+			right: -14px;
+			width: 50px;
+			height: 50px;
+			background: #4EB7CD;
+			color: white;
+			font-weight: 100;
+			text-align: center;
+			box-sizing: border-box;
+			padding-top: 11px;
+			font-size: 24px;
+			text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+			border-radius: 60px;
+			transform: translate3d(0,0,0);
+			transition: transform .3s;
+			box-shadow: 0px 2px 2px rgba(0,0,0,0.1)
+		}
+		
+		.hidden{
+			transform: translate3d(0,0,0) scale(0.001);
+		}
+		.deck{
+			max-width: 1400px;
+			width: 94%;
+			margin: 0 auto;
+			height: auto;
+			position: absolute;
+			top: 50%;
+			left: 0;
+			right: 0;
+			transform: translate3d(0,-50%,0);
+			text-align: center;
+			padding-bottom: 80px;
+			padding-top: 80px;
+		}
+
+
+		.user-card{
+			width: 170px;
+			height: 210px;
+			display: inline-block;
+			position: relative;
+			margin: 40px;
+		}
+
+		.ribbon {
+		   width: 150px;
+		   height: 30px;
+		   position: absolute;
+		   left: 0;
+		   right: 0;
+		   margin: 0 auto;
+		   text-align: center;
+		   font-size: 19px!important;
+		   font-family: 'Helvetica Neue',Helvetica, sans-serif;
+		   z-index: 2;
+		   }
+		.ribbon:before, .ribbon:after {
+		   content: '';
+		   position: absolute;
+		   display: block;
+		   bottom: -1em;
+		   border: 0.9em solid #919BB0;
+		   }
+		.ribbon:before {
+		   left: -2em;
+		   border-right-width: 1.5em;
+		   border-left-color: transparent;
+		   -webkit-box-shadow: rgba(000,000,000,0.4) 0px 0px 0px;
+		   -moz-box-shadow: rgba(000,000,000,0.4) 0px 0px 0px;
+		   box-shadow: rgba(000,000,000,0.4) 0px 0px 0px;
+		   }
+		.ribbon:after {
+		   right: -2em;
+		   border-left-width: 1.5em;
+		   border-right-color: transparent;
+		   -webkit-box-shadow: rgba(000,000,000,0.4) -0px 0px 0px;
+		   -moz-box-shadow: rgba(000,000,000,0.4) -0px 0px 0px;
+		   box-shadow: rgba(000,000,000,0.4) -0px 0px 0px;
+		   }
+		.ribbon .ribbon-content:before, .ribbon .ribbon-content:after {
+		   border-color: rgba(0,0,0,0.2) transparent transparent transparent;
+		   position: absolute;
+		   display: block;
+		   border-style: solid;
+		   bottom: -1em;
+		   content: '';
+		   z-index: 1;
+		   }
+		.ribbon .ribbon-content:before {
+		   left: -4px;
+		   border-width: 0.5em 0 0 0.6em;
+		   }
+		.ribbon .ribbon-content:after {
+		   right: -5px;
+		   border-width: 0.5em 0.67em 0 0;
+		   }
+
+		   .hasVoted{
+		   	pointer-events: none;
+		   	opacity: 0;
+		   }
+	</style>
+	<div class="deck">
+    {{#each users}}
+    	{{#if status.online}}
+    	<div class="user-card">
+			<div class="public-avatar" style="background-image: url('{{profile.avatur_url}}')"></div>
+			<div class="ribbon">
+				<strong class="ribbon-content"></strong>
+			</div>
+		    <p class="name">{{username}}</p>
+		    <p class="public-vote">{{profile.current_vote}}</p> 
+        </div>
+        {{/if}}
+    {{/each}}
+    </div>
+</template>

@@ -1,0 +1,8 @@
+/* CSS declarations go here */
+body, html{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	background: #393F4F;
+	font-family: 'helvetica neue', 'helvetica', 'arial', sans-serif;
+}
