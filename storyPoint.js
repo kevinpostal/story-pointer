@@ -50,6 +50,9 @@ if (Meteor.isClient) {
         event.preventDefault();
         var theEvent = event;
         var key = theEvent.keyCode || theEvent.which;
+        if(key == 13){
+          return;
+        }
         key = String.fromCharCode( key );
         var currValue = template.find('#current-vote').value;
         var regex = /[0-9]|\./;
@@ -72,13 +75,6 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.serverStatus.events({
-    'click .public-vote': function(event, template){
-      event.preventDefault();
-      console.log('hello');
-    }
-  });
-
   UI.registerHelper("userStatus", UserStatus);
   UI.registerHelper("localeTime", function(date) {
     return date != null ? date.toLocaleString() : void 0;
@@ -96,6 +92,18 @@ if (Meteor.isClient) {
       }
     });
   };
+
+  Template.serverStatus.allVoted = function() {
+    if (Meteor.users.find({
+      "status.online":true, 
+      "profile.current_vote":''
+    }).count() == 0) {
+      return {class:"public-vote visible"}
+    } else {
+      return {class:"public-vote"}
+      }    
+  };
+
   Template.serverStatus.users = function() {
     return Meteor.users.find();
   };
@@ -147,7 +155,10 @@ if (Meteor.isServer) {
       }, {
         fields: {
           status: 1,
-          username: 1
+          username: 1,
+          'profile.avatur_url': 1,
+          'profile.current_vote': 1,
+          'profile.vote_ready': 1
         }
       }), UserStatus.connections.find()
     ];

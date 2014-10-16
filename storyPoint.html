@@ -1,5 +1,6 @@
 <head>
 	<title>ZG StoryPointer</title>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimal-ui">
 </head>
 
 <body>
@@ -7,28 +8,81 @@
         {{> dashboard}}
         {{> serverStatus}}
     {{else}}
+    	<img src="http://www.zehnergroup.com/wp-content/themes/zehnergroup/images/zehnergroup-logo.jpg" style="margin: 40px auto; display: block;">
+    	{{> login}}
         {{> register}}
-        {{> login}}
     {{/if}}
 </body>
 
 <template name="register">
+<style>
+	.register-form{
+		max-width: 320px;
+		margin: 0 auto;
+	}
+
+	.register-form input{
+		background: white;
+		border: none;
+		font-size; 16px;
+		width: 100%;
+		margin: 10px auto;
+		padding: 8px 12px;
+		border-radius: 8px;
+		outline: none;
+		border: 1px solid transparent;
+		transition: border-color .3s;
+		box-sizing: border-box;
+	}
+
+	.register-form input:focus{
+		border: 1px solid rgb(160, 255, 160);
+	}
+</style>
+<div class="register-form">
 <h3>New User?</h3>
 <form>
     <input type="text" id="register-name" placeholder="Name...">
     <input type="password" id="register-password" placeholder="Password...">
-    <input type="text" id="register-photo" placeholder="Avatar URL...(optional)">
+    <input type="text" id="register-photo" placeholder="Avatar Image URL...">
     <input type="submit" value="Register">
 </form>
+</div>
 </template>
 
 <template name="login">
+<style>
+	.login-form{
+		max-width: 320px;
+		margin: 0 auto;
+	}
+
+	.login-form input{
+		background: white;
+		border: none;
+		font-size; 16px;
+		width: 100%;
+		margin: 10px auto;
+		padding: 8px 12px;
+		border-radius: 8px;
+		outline: none;
+		border: 1px solid transparent;
+		transition: border-color .3s;
+		box-sizing: border-box;
+	}
+
+	.login-form input:focus{
+		border: 1px solid rgb(160, 255, 160);
+	}
+</style>
+<div class="login-form">
 <h3>Welcome Back</h3>
 <form>
     <input type="text" id="login-name" placeholder="Name...">
     <input type="password" id="login-password" placeholder="Password...">
     <input type="submit" value="Login">
 </form>
+</div>
 </template>
 
 <template name="dashboard">
@@ -36,7 +90,7 @@
 		.navbar{
 			width: 100%;
 			height: 80px;
-			background: #5A6378;
+			background: #f0f0f0;
 			position: fixed;
 			bottom: 0;
 			left: 0;
@@ -45,7 +99,7 @@
 
 		.navbar >input{
 			float: right;
-			background: #475064;
+			background: #D3DBE0;
 			border: none;
 			height: 40px;
 			border-radius: 120px;
@@ -55,7 +109,7 @@
 			font-size: 16px;
 			width: 100px;
 			outline: none;
-			color: #4EB7CD;
+			color: #6E6E6E;
 
 		}
 
@@ -81,7 +135,7 @@
 
 		h1{
 			display: inline-block;
-			color: #A4ACBD;
+			color: #6E6E6E;
 			font-weight: 200;
 			margin: 0;
 			position: relative;
@@ -113,7 +167,7 @@
 			box-sizing: border-box;
 			height: 40px;
 			width: 120px;
-			background: #FF6B6B;
+			background: #FF6161;
 			text-transform: uppercase;
 			text-align: center;
 			border-radius: 120px;
@@ -123,6 +177,11 @@
 			padding-top: 11px;
 			margin-top: 18px;
 			margin-right: 20px;
+			transition: background .2s;
+		}
+
+		.logout:hover{
+			background: #FB2A2A;
 		}
 	</style>
 	<nav class="navbar">
@@ -130,7 +189,7 @@
 		<h1>ZehnerGroup Story Planning</h1>
 		<a href="#" class="logout">Logout</a>
 		<div class="avatar"></div>
-		<input id="current-vote" type="text" placeholder="estimate">
+		<input id="current-vote" type="text" placeholder="estimate" value="{{currentUser.profile.current_vote}}">
     </nav>
 </template>
 
@@ -143,31 +202,50 @@
 			background-repeat: no-repeat;
 			border-radius: 10px;
 			background-image: url({{this.profile.avatur_url}});
+			background-color: rgba(0,0,0,0.6);
 			margin: 0 auto;
 			position: relative;
-			top: 30px
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+			transform: translate3d(0,0,0);
 		}
 
 		.name{
 			width: 100%;
 			text-align: center;
-			background: #A4ACBD;
+			background: white;
 			height: 40px;
 			z-index: 4;
 			position: relative;
 			top: -16px;
 			padding-top: 10px;
 			box-sizing: border-box;
-			color: #393F4F;
+			color: #6E6E6E;
+		}
+
+		.name::after{
+			content: '';
+			width: 100%;
+			position: absolute;
+			bottom: 0;
+			height: 5px;
+			background: rgb(160, 255, 160);
+			left: 0;
+			transform: translate3d(0,0,0) scaleX(0.001);
+			transition: transform .3s;
+		}
+
+		.name.voted::after{
+			transform: translate3d(0,0,0) scaleX(1);
 		}
 
 		.public-vote{
 			position: absolute;
-			top: -10px;
+			top: -40px;
 			right: -14px;
 			width: 50px;
 			height: 50px;
-			background: #4EB7CD;
+			background: #FF6161;
 			color: white;
 			font-weight: 100;
 			text-align: center;
@@ -176,9 +254,13 @@
 			font-size: 24px;
 			text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 			border-radius: 60px;
-			transform: translate3d(0,0,0);
+			transform: translate3d(0,0,0) scale(0.001);
 			transition: transform .3s;
 			box-shadow: 0px 2px 2px rgba(0,0,0,0.1)
+		}
+
+		.public-vote.visible{
+			transform: translate3d(0,0,0) scale(1);
 		}
 		
 		.hidden{
@@ -225,7 +307,7 @@
 		   position: absolute;
 		   display: block;
 		   bottom: -1em;
-		   border: 0.9em solid #919BB0;
+		   border: 0.9em solid #f8f8f8;
 		   }
 		.ribbon:before {
 		   left: -2em;
@@ -244,7 +326,7 @@
 		   box-shadow: rgba(000,000,000,0.4) -0px 0px 0px;
 		   }
 		.ribbon .ribbon-content:before, .ribbon .ribbon-content:after {
-		   border-color: rgba(0,0,0,0.2) transparent transparent transparent;
+		   border-color: rgba(0,0,0,0.15) transparent transparent transparent;
 		   position: absolute;
 		   display: block;
 		   border-style: solid;
@@ -253,12 +335,12 @@
 		   z-index: 1;
 		   }
 		.ribbon .ribbon-content:before {
-		   left: -4px;
-		   border-width: 0.5em 0 0 0.6em;
+		   left: -10px;
+		   border-width: 0.5em 0 0 0.9em;
 		   }
 		.ribbon .ribbon-content:after {
-		   right: -5px;
-		   border-width: 0.5em 0.67em 0 0;
+		   right: -10px;
+		   border-width: 0.5em 0.9em 0 0;
 		   }
 
 		   .hasVoted{
@@ -274,8 +356,8 @@
 			<div class="ribbon">
 				<strong class="ribbon-content"></strong>
 			</div>
-		    <p class="name">{{username}}</p>
-		    <p class="public-vote">{{profile.current_vote}}</p> 
+		    <p class="name {{#if profile.vote_ready}}voted{{/if}}">{{username}}</p>
+		    <p class="public-vote" {{allVoted}}>{{profile.current_vote}}</p> 
         </div>
         {{/if}}
     {{/each}}
