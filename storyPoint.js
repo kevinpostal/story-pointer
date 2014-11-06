@@ -147,6 +147,8 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
+  Houston.add_collection(Meteor.users);
+  Houston.add_collection(Houston._admins);
   process.env.HTTP_FORWARDED_COUNT = 1;
   Meteor.publish(null, function() {
     return [
